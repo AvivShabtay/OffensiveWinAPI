@@ -1,6 +1,7 @@
 #include "..\Helper\common.h"
 #include <windows.h>
 #include <winternl.h>
+#include <tchar.h>
 
 typedef struct _LDR_MODULE {
 	LIST_ENTRY InLoadOrderModuleList;
@@ -34,10 +35,10 @@ typedef struct __PEB_LDR_DATA {
 
 DWORD GetPebAddress();
 DWORD* GetPebLdrAddress();
-DWORD FindModuleBaseAddress(PPeb_Ldr_Data ldrBaseAddress, WCHAR* moduleName);
+DWORD FindModuleBaseAddress(PPeb_Ldr_Data ldrBaseAddress, TCHAR* moduleName);
 
 int main() {
-	WCHAR moduleName[] = L"DLLExample.dll";
+	TCHAR moduleName[] = "DLLExample.dll";
 	HANDLE hMyDLL;
 	PPEB dwPebAddress;
 	PPeb_Ldr_Data ldrAddress;
@@ -84,7 +85,7 @@ DWORD* GetPebLdrAddress() {
 	return dwPebLdrBaseAddress;
 }
 
-DWORD FindModuleBaseAddress(PPeb_Ldr_Data ldrBaseAddress, WCHAR* moduleName) {
+DWORD FindModuleBaseAddress(PPeb_Ldr_Data ldrBaseAddress, TCHAR* moduleName) {
 
 	// Get the first _LIST_ENTRY of InMemoryLoadedModules:
 	PLDR_MODULE ldrModule = (PLDR_MODULE)ldrBaseAddress->InLoadOrderModuleList.Flink;
