@@ -6,7 +6,7 @@
 ---
 
 ## Demo
-<img src="images/example.png" width=800></img>
+<img src="images/example.jpg" width=800></img>
 Running the executable file with given PID.
 
 ---
