@@ -15,7 +15,7 @@ Projects
 -
 1. **DL** - Simple DLL for testing, pop-ups message box to indicates if successful attachment, used in other projects in this solution.
 2. **HideDLL** - Example of method used to hide loaded module in the running process, load DLL (DL.dll) and hide it.
-2. **FindHiddenModule** - Example of method used to find hidden modules by querying the Virtual-Memory of running process and file the mapped files for each memory section.
+2. **ScanMemory** - Example of method used to find hidden modules by querying the Virtual-Memory of running process and file the mapped files for each memory section.
 4. **EncryptDecrypt** - Simple example of using XOR operation to hide data.
 4. **PlayWithNTFS** - POC of using NTFS Extended-Attributes to hide which can bu used in attack.
 5. **Shellcode** - PIC (Position-Independent-Code) shellcode for loading DLL into process memory for injection purposes.
