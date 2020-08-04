@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EncryptDecrypt", "EncryptDe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HideDLL", "HideDLL\HideDLL.vcxproj", "{07D7743C-CF8B-49F4-A262-AA3474337119}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScanMemory", "ScanMemory\ScanMemory.vcxproj", "{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -106,6 +108,14 @@ Global
 		{07D7743C-CF8B-49F4-A262-AA3474337119}.Release|x64.Build.0 = Release|x64
 		{07D7743C-CF8B-49F4-A262-AA3474337119}.Release|x86.ActiveCfg = Release|Win32
 		{07D7743C-CF8B-49F4-A262-AA3474337119}.Release|x86.Build.0 = Release|Win32
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Debug|x64.ActiveCfg = Debug|x64
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Debug|x64.Build.0 = Debug|x64
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Debug|x86.Build.0 = Debug|Win32
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Release|x64.ActiveCfg = Release|x64
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Release|x64.Build.0 = Release|x64
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Release|x86.ActiveCfg = Release|Win32
+		{4C290F27-DE87-45D1-AD7F-7A60DF537F0D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
