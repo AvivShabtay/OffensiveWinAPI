@@ -1,44 +1,32 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Copyright © Aviv Shabtay 2020, All rights reserved
+//////////////////////////////////////////////////////////////////////
+//  Copyright © Aviv Shabtay 2020-2021, All rights reserved
 //
 // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 // ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 // THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
 // PARTICULAR PURPOSE.
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 #include <windows.h>
 #include <winternl.h>
 #include <Psapi.h>
 #include <tchar.h>
 #include <stdio.h>
-
-#define ERROR_MESSAGE_SIZE 512
+#include <iostream>
+#include <atlstr.h>
 
 // Helper function to test NTSTATUS values:
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
-// Prototype to Native-API function:
-typedef NTSTATUS(NTAPI* pNtSuspendProcess)(
-	IN HANDLE ProcessHandle
-	);
+using pNtSuspendProcess = NTSTATUS(NTAPI*)(IN HANDLE);
+//BOOL SuspendProc(DWORD dwPid);
 
 // Helper functions:
-//BOOL SuspendProc(DWORD dwPid);
-VOID GetLastErrorAsString(TCHAR* result);
-VOID GetMemoryType(DWORD type, TCHAR* result);
-VOID GetMemoryState(DWORD type, TCHAR* result);
-VOID GetMemoryProtection(DWORD type, TCHAR* result);
+std::wstring GetLastErrorMessage();
+std::wstring GetMemoryType(DWORD type);
+std::wstring GetMemoryState(DWORD type);
+std::wstring GetMemoryProtection(DWORD type);
 
 int main(int argc, TCHAR* argv[]) {
-
-	DWORD dwPid;
-	MEMORY_BASIC_INFORMATION memoryInfo = { 0 };
-	PVOID* addr = 0;
-	HANDLE hProc = nullptr;
-	TCHAR fileName[MAX_PATH];
-	DWORD dwBytesRead;
-	PVOID pBaseAddress = nullptr;
-	PVOID pAddressBlock = nullptr;
 
 	// Check input data:
 	if (argc < 2) {
@@ -47,33 +35,32 @@ int main(int argc, TCHAR* argv[]) {
 	}
 
 	// The PID to search:
-	dwPid = atoi(argv[1]);
+	DWORD dwPid = atoi(argv[1]);
 
 	// Open handle to the process:
-	hProc = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid);
+	HANDLE hProc = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid);
 	if (hProc == INVALID_HANDLE_VALUE) {
-		TCHAR errorMessage[ERROR_MESSAGE_SIZE] = { 0 };
-		GetLastErrorAsString(errorMessage);
-
-		printf("[-] Could not open handle to process PID=%d, Error: %s\n", dwPid, errorMessage);
+		auto errorMessage = GetLastErrorMessage();
+		printf("[-] Could not open handle to process PID=%d, Error: %ws\n", dwPid, errorMessage.c_str());
 		return -1;
 	}
 
 	// Query memory information of another process:
-	dwBytesRead = VirtualQueryEx(hProc, &addr, &memoryInfo, sizeof(memoryInfo));
+	DWORD dwBytesRead = 0;
+	LPVOID lpAddress = nullptr;
+	MEMORY_BASIC_INFORMATION memoryInfo = { 0 };
+	dwBytesRead = VirtualQueryEx(hProc, lpAddress, &memoryInfo, sizeof(memoryInfo));
 	if (dwBytesRead == 0) {
-		TCHAR errorMessage[ERROR_MESSAGE_SIZE] = { 0 };
-		GetLastErrorAsString(errorMessage);
-
-		printf("[-] Could read memory using VirtualQueryEx, Error: %s\n", errorMessage);
+		auto errorMessage = GetLastErrorMessage();
+		printf("[-] Could read memory using VirtualQueryEx, Error: %ws\n", errorMessage.c_str());
 
 		CloseHandle(hProc);
 		return -1;
 	}
 
 	// Setup pointers for iteration:
-	pBaseAddress = memoryInfo.AllocationBase;
-	pAddressBlock = pBaseAddress;
+	PVOID pBaseAddress = memoryInfo.AllocationBase;
+	PVOID pAddressBlock = pBaseAddress;
 
 	printf("[+] Print the process memory regions with mapped file:\n");
 
@@ -87,107 +74,97 @@ int main(int argc, TCHAR* argv[]) {
 		}
 
 		// Try to get mapped file name to the memory range:
-		DWORD success = GetMappedFileName(hProc, memoryInfo.BaseAddress, fileName, MAX_PATH);
+		TCHAR fileName[MAX_PATH];
+		if (GetMappedFileName(hProc, memoryInfo.BaseAddress, fileName, MAX_PATH)) {
 
-		// Successfully get mapped file to the memory range:
-		if (success) {
-			TCHAR memoryType[10] = { 0 };
-			TCHAR memoryState[10] = { 0 };
-			TCHAR memoryProtection[10] = { 0 };
+			auto type = GetMemoryType(memoryInfo.Type);
+			auto state = GetMemoryState(memoryInfo.State);
+			auto protection = GetMemoryProtection(memoryInfo.Protect);
 
-			GetMemoryType(memoryInfo.Type, memoryType);
-			GetMemoryState(memoryInfo.State, memoryState);
-			GetMemoryProtection(memoryInfo.Protect, memoryProtection);
-
-			printf("[*] Address: 0x%08p | Base: 0x%08p | Type: %-6s | State: %-7s | Protection: %-3s | FileName: %s\n",
-				pAddressBlock, memoryInfo.BaseAddress, memoryType, memoryState, memoryProtection, fileName);
+			printf("[*] Address: 0x%08p | Base: 0x%08p | Type: %-6ws | State: %-7ws | Protection: %-3ws | FileName: %s\n",
+				pAddressBlock, memoryInfo.BaseAddress, type.c_str(), state.c_str(), protection.c_str(), fileName);
 		}
 
 		// Move to the next memory range:
 		pAddressBlock = (PVOID)((PBYTE)pAddressBlock + memoryInfo.RegionSize);
 	}
 
-	// Release resources:
 	CloseHandle(hProc);
 }
 
-/*
- * Convert the last error code into readable message and copy
- * the message into the given buffer.
-*/
-VOID GetLastErrorAsString(TCHAR* result) {
-	DWORD dwErrorCode;
-	DWORD dwSize;
-	TCHAR message[ERROR_MESSAGE_SIZE];
+/* Convert the last error code into readable message and copy
+   the message into the given buffer. */
+std::wstring GetLastErrorMessage() {
 
-	dwErrorCode = GetLastError();
+	DWORD dwErrorCode = GetLastError();
+	if (dwErrorCode == 0) {
+		return std::wstring();
+	}
+
+	const int MESSAGE_SIZE = 512;
+	CHAR message[MESSAGE_SIZE];
 
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dwErrorCode,
-		0, message, ERROR_MESSAGE_SIZE, NULL);
+		0, message, MESSAGE_SIZE, NULL);
 
-	CopyMemory(result, message, ERROR_MESSAGE_SIZE);
+	return std::wstring(CStringW(const_cast<CHAR*>(message)).GetString());
 }
 
-/*
- * Convert memory type mask into common name.
-*/
-VOID GetMemoryType(DWORD type, TCHAR* result) {
+/* Convert memory type mask into common name. */
+std::wstring GetMemoryType(DWORD type) {
 	if (type & MEM_IMAGE)
-		CopyMemory(result, "Image", 5);
+		return L"Image";
 
 	else if (type & MEM_MAPPED)
-		CopyMemory(result, "Mapped", 6);
+		return L"Mapped";
 
 	else if (type & MEM_PRIVATE)
-		CopyMemory(result, "Private", 7);
+		return L"Private";
 	else
-		return;
+		return L"";
 }
 
-/*
- * Convert memory state mask into common name.
-*/
-VOID GetMemoryState(DWORD type, TCHAR* result) {
+/* Convert memory state mask into common name. */
+std::wstring GetMemoryState(DWORD type) {
 	if (type & MEM_COMMIT)
-		CopyMemory(result, "Commit", 6);
+		return L"Commit";
 
 	else if (type & MEM_FREE)
-		CopyMemory(result, "Free", 4);
+		return L"Free";
 
 	else if (type & MEM_RESERVE)
-		CopyMemory(result, "Reserve", 7);
+		return L"Reserve";
 	else
-		return;
+		return L"";
 }
 
-/*
- * Convert memory protection mask into common name.
-*/
-VOID GetMemoryProtection(DWORD type, TCHAR* result) {
+/* Convert memory protection mask into common name. */
+std::wstring GetMemoryProtection(DWORD type) {
+
 	if (type & PAGE_READONLY)
-		CopyMemory(result, "R", 1);
+		return L"R";
 
 	else if (type & PAGE_WRITECOPY)
-		CopyMemory(result, "WC", 2);
+		return L"WC";
 
 	else if (type & PAGE_READWRITE)
-		CopyMemory(result, "RW", 2);
+		return L"RW";
 
 	else if (type & PAGE_NOACCESS)
-		CopyMemory(result, "NA", 2);
+		return L"NA";
 
 	else if (type & PAGE_EXECUTE)
-		CopyMemory(result, "X", 1);
+		return L"X";
 
 	else if (type & PAGE_EXECUTE_READ)
-		CopyMemory(result, "RX", 2);
+		return L"RX";
 
 	else if (type & PAGE_EXECUTE_READWRITE)
-		CopyMemory(result, "RWX", 3);
+		return L"RWX";
 
 	else if (type & PAGE_EXECUTE_WRITECOPY)
-		CopyMemory(result, "WCX", 3);
+		return L"WCX";
 
 	else
-		return;
+		return L"";
 }
