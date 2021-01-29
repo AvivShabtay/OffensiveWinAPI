@@ -46,11 +46,9 @@ int main(int argc, TCHAR* argv[]) {
 	}
 
 	// Query memory information of another process:
-	DWORD dwBytesRead = 0;
 	LPVOID lpAddress = nullptr;
 	MEMORY_BASIC_INFORMATION memoryInfo = { 0 };
-	dwBytesRead = VirtualQueryEx(hProc, lpAddress, &memoryInfo, sizeof(memoryInfo));
-	if (dwBytesRead == 0) {
+	if (!VirtualQueryEx(hProc, lpAddress, &memoryInfo, sizeof(memoryInfo))) {
 		auto errorMessage = GetLastErrorMessage();
 		printf("[-] Could read memory using VirtualQueryEx, Error: %ws\n", errorMessage.c_str());
 
@@ -67,9 +65,8 @@ int main(int argc, TCHAR* argv[]) {
 	// Find all the mapped modules used by the process:
 	while (TRUE) {
 
-		// Get memory info about the current block of memory:
-		dwBytesRead = VirtualQueryEx(hProc, pAddressBlock, &memoryInfo, sizeof(memoryInfo));
-		if (dwBytesRead != sizeof(memoryInfo)) {
+		// Get memory info about the current block of memory
+		if (VirtualQueryEx(hProc, pAddressBlock, &memoryInfo, sizeof(memoryInfo)) != sizeof(memoryInfo)) {
 			break;
 		}
 
