@@ -8,6 +8,12 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
-#include "framework.h"
+#include <windows.h>
+#include <TlHelp32.h>
+#include <vector>
+#include <map>
+#include <utility>
+#include <strsafe.h>
+#include <iostream>
 
 #endif //PCH_H
