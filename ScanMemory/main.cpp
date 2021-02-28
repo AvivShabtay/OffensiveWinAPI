@@ -6,13 +6,14 @@
 // THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
 // PARTICULAR PURPOSE.
 //////////////////////////////////////////////////////////////////////
-#include <windows.h>
-#include <winternl.h>
-#include <Psapi.h>
-#include <tchar.h>
-#include <stdio.h>
+
+#include "../Common/AutoHandle.h"
+
 #include <iostream>
 #include <atlstr.h>
+
+#include <Psapi.h>
+#include <Windows.h>
 
 // Helper function to test NTSTATUS values:
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
