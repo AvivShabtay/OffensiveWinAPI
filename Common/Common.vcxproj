@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoHandle.h" />
+    <ClInclude Include="Win32ErrorCodeException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp" />
+    <ClCompile Include="Win32ErrorCodeException.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
