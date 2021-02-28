@@ -8,8 +8,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "../Common/AutoHandle.h"
+#include "../Common/Win32ErrorCodeException.h"
 
 #include <iostream>
+#include <stdexcept>
+
 #include <atlstr.h>
 
 #include <Psapi.h>
@@ -22,12 +25,12 @@ using pNtSuspendProcess = NTSTATUS(NTAPI*)(IN HANDLE);
 //BOOL SuspendProc(DWORD dwPid);
 
 // Helper functions:
-std::wstring GetLastErrorMessage();
+//std::string GetLastErrorMessage();
 std::wstring GetMemoryType(DWORD type);
 std::wstring GetMemoryState(DWORD type);
 std::wstring GetMemoryProtection(DWORD type);
 
-int main(int argc, TCHAR* argv[]) {
+int wmain(int argc, PWCHAR argv[]) {
 
 	// Check input data:
 	if (argc < 2) {
@@ -35,77 +38,59 @@ int main(int argc, TCHAR* argv[]) {
 		return -1;
 	}
 
-	// The PID to search:
-	DWORD dwPid = atoi(argv[1]);
+	const DWORD processPid = _wtoi(argv[1]);
 
-	// Open handle to the process:
-	HANDLE hProc = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid);
-	if (hProc == INVALID_HANDLE_VALUE) {
-		auto errorMessage = GetLastErrorMessage();
-		printf("[-] Could not open handle to process PID=%d, Error: %ws\n", dwPid, errorMessage.c_str());
-		return -1;
-	}
-
-	// Query memory information of another process:
-	LPVOID lpAddress = nullptr;
-	MEMORY_BASIC_INFORMATION memoryInfo = { 0 };
-	if (!VirtualQueryEx(hProc, lpAddress, &memoryInfo, sizeof(memoryInfo))) {
-		auto errorMessage = GetLastErrorMessage();
-		printf("[-] Could read memory using VirtualQueryEx, Error: %ws\n", errorMessage.c_str());
-
-		CloseHandle(hProc);
-		return -1;
-	}
-
-	// Setup pointers for iteration:
-	PVOID pBaseAddress = memoryInfo.AllocationBase;
-	PVOID pAddressBlock = pBaseAddress;
-
-	printf("[+] Print the process memory regions with mapped file:\n");
-
-	// Find all the mapped modules used by the process:
-	while (TRUE) {
-
-		// Get memory info about the current block of memory
-		if (VirtualQueryEx(hProc, pAddressBlock, &memoryInfo, sizeof(memoryInfo)) != sizeof(memoryInfo)) {
-			break;
+	try
+	{
+		const AutoHandle process(OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processPid));
+		if (INVALID_HANDLE_VALUE == process.get())
+		{
+			throw Win32ErrorCodeException("Could not open handle to process");
 		}
 
-		// Try to get mapped file name to the memory range:
-		TCHAR fileName[MAX_PATH];
-		if (GetMappedFileName(hProc, memoryInfo.BaseAddress, fileName, MAX_PATH)) {
-
-			auto type = GetMemoryType(memoryInfo.Type);
-			auto state = GetMemoryState(memoryInfo.State);
-			auto protection = GetMemoryProtection(memoryInfo.Protect);
-
-			printf("[*] Address: 0x%08p | Base: 0x%08p | Type: %-6ws | State: %-7ws | Protection: %-3ws | FileName: %s\n",
-				pAddressBlock, memoryInfo.BaseAddress, type.c_str(), state.c_str(), protection.c_str(), fileName);
+		// Query memory information of another process:
+		LPVOID lpAddress = nullptr;
+		MEMORY_BASIC_INFORMATION memoryInfo = { 0 };
+		if (0 == VirtualQueryEx(process.get(), lpAddress, &memoryInfo, sizeof(memoryInfo)))
+		{
+			throw Win32ErrorCodeException("Could read process virtual memory");
 		}
 
-		// Move to the next memory range:
-		pAddressBlock = (PVOID)((PBYTE)pAddressBlock + memoryInfo.RegionSize);
+		// Setup pointers for iteration:
+		PVOID pBaseAddress = memoryInfo.AllocationBase;
+		PVOID pAddressBlock = pBaseAddress;
+
+		printf("[+] Print the process memory regions with mapped file:\n");
+
+		// Find all the mapped modules used by the process:
+		while (TRUE) {
+
+			// Get memory info about the current block of memory
+			if (VirtualQueryEx(process.get(), pAddressBlock, &memoryInfo, sizeof(memoryInfo)) != sizeof(memoryInfo)) {
+				break;
+			}
+
+			// Try to get mapped file name to the memory range:
+			WCHAR fileName[MAX_PATH];
+			if (GetMappedFileName(process.get(), memoryInfo.BaseAddress, fileName, MAX_PATH)) {
+
+				auto type = GetMemoryType(memoryInfo.Type);
+				auto state = GetMemoryState(memoryInfo.State);
+				auto protection = GetMemoryProtection(memoryInfo.Protect);
+
+				printf("[*] Address: 0x%08p | Base: 0x%08p | Type: %-6ws | State: %-7ws | Protection: %-3ws | FileName: %ws\n",
+					pAddressBlock, memoryInfo.BaseAddress, type.c_str(), state.c_str(), protection.c_str(), fileName);
+			}
+
+			// Move to the next memory range:
+			pAddressBlock = (PVOID)((PBYTE)pAddressBlock + memoryInfo.RegionSize);
+		}
 	}
-
-	CloseHandle(hProc);
-}
-
-/* Convert the last error code into readable message and copy
-   the message into the given buffer. */
-std::wstring GetLastErrorMessage() {
-
-	DWORD dwErrorCode = GetLastError();
-	if (dwErrorCode == 0) {
-		return std::wstring();
+	catch (std::exception& exception)
+	{
+		std::cout << exception.what() << std::endl;
+		return 1;
 	}
-
-	const int MESSAGE_SIZE = 512;
-	CHAR message[MESSAGE_SIZE];
-
-	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dwErrorCode,
-		0, message, MESSAGE_SIZE, NULL);
-
-	return std::wstring(CStringW(const_cast<CHAR*>(message)).GetString());
 }
 
 /* Convert memory type mask into common name. */
