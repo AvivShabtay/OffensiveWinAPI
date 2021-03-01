@@ -31,5 +31,6 @@ protected:
 
 	DWORD m_errorCode;
 	std::string m_winErrorMessage;
+	std::string m_errorMessage;
 };
 

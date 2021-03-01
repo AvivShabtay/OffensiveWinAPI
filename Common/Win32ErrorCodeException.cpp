@@ -10,19 +10,20 @@ Win32ErrorCodeException::Win32ErrorCodeException(const std::string& errorMessage
 {
 	this->m_errorCode = GetLastError();
 	this->m_winErrorMessage = this->getLastErrorMessage();
+
+	std::stringstream messageStream;
+	messageStream << std::runtime_error::what();
+	messageStream << "\nWindows last error code: 0x";
+	messageStream << std::hex << this->m_errorCode;
+	messageStream << "\nWindows error message: ";
+	messageStream << this->m_winErrorMessage;
+
+	this->m_errorMessage = messageStream.str();
 }
 
 const char* Win32ErrorCodeException::what() const
 {
-	std::stringstream messageStream;
-
-	messageStream << std::runtime_error::what();
-	messageStream << "\n\tWindows last error code: 0x";
-	messageStream << std::hex << this->m_errorCode;
-	messageStream << "\n\tWindows error message: ";
-	messageStream << this->m_winErrorMessage;
-
-	return std::string(messageStream.str()).c_str();
+	return this->m_errorMessage.c_str();
 }
 
 
