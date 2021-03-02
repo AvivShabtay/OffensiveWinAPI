@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////
-//  Copyright ï¿½ Aviv Shabtay 2020-2021, All rights reserved
+//  Copyright © Aviv Shabtay 2020-2021, All rights reserved
 //
 // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 // ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
@@ -25,7 +25,6 @@ using pNtSuspendProcess = NTSTATUS(NTAPI*)(IN HANDLE);
 //BOOL SuspendProc(DWORD dwPid);
 
 // Helper functions:
-//std::string GetLastErrorMessage();
 std::wstring GetMemoryType(DWORD type);
 std::wstring GetMemoryState(DWORD type);
 std::wstring GetMemoryProtection(DWORD type);
