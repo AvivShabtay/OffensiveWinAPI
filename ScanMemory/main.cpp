@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////
-//  Copyright © Aviv Shabtay 2020-2021, All rights reserved
+//  Copyright ï¿½ Aviv Shabtay 2020-2021, All rights reserved
 //
 // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 // ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
@@ -32,10 +32,11 @@ std::wstring GetMemoryProtection(DWORD type);
 
 int wmain(int argc, PWCHAR argv[]) {
 
-	// Check input data:
-	if (argc < 2) {
-		printf("Usage %s <pid>\n", __FILE__);
-		return -1;
+	if (argc < 2)
+	{
+		std::cout << "Usage ScanMemory.exe <pid>" << std::endl;
+		std::cout << "\tpid - PID of the process to be scanned" << std::endl;
+		return 1;
 	}
 
 	const DWORD processPid = _wtoi(argv[1]);
