@@ -136,6 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MemoryInformation.cpp" />
+    <ClCompile Include="MemoryInformationIterator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -144,6 +146,10 @@
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{528cf324-c076-4ba8-a436-2d23f8acc227}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MemoryInformation.h" />
+    <ClInclude Include="MemoryInformationIterator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
