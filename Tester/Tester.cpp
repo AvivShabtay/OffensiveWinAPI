@@ -1,21 +1,27 @@
-#include <Windows.h>
+#include "../Common/RunningProcesses.h"
+
 #include <iostream>
-#include <map>
-#include "..\Helper\ProcessUtils.h"
+
+#include <TlHelp32.h>
+#include <Windows.h>
 
 int main() {
-	std::map<DWORD, std::wstring> procList;
+	try
+	{
+		RunningProcesses processes;
+		for (const PROCESSENTRY32& process : processes)
+		{
+			const std::wstring processName(process.szExeFile);
+			const DWORD processPid = process.th32ProcessID;
 
-	ProcessUtils::GetAllRunningProcesses(procList);
-	if (0 < procList.size()) {
-		for (auto& [pid, procName] : procList) {
-			std::wcout << pid << ", " << procName << std::endl;
+			std::wcout << " PID=" << processPid << ", Process Name=" << processName << std::endl;
 		}
 	}
-
-	std::wstring procName = L"csrss.exe";
-	DWORD pid = ProcessUtils::FindPidByProcessName(procName);
-	std::wcout << "PID of " << procName << " is: " << pid << std::endl;
+	catch (std::exception& exception)
+	{
+		std::cout << "Error: " << exception.what() << std::endl;
+		return 1;
+	}
 
 	return 0;
 }

@@ -21,12 +21,24 @@
     <ClInclude Include="Win32ErrorCodeException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ProcessEntryIterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RunningProcesses.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Win32ErrorCodeException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessEntryIterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RunningProcesses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
