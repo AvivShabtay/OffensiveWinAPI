@@ -27,6 +27,18 @@
     <ClInclude Include="RunningProcesses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VirtualAllocExGuard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugPrint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp">
@@ -39,6 +51,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RunningProcesses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualAllocExGuard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

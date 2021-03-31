@@ -20,14 +20,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoHandle.h" />
+    <ClInclude Include="DebugPrint.h" />
+    <ClInclude Include="ProcessUtils.h" />
     <ClInclude Include="RunningProcesses.h" />
     <ClInclude Include="ProcessEntryIterator.h" />
+    <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="VirtualAllocExGuard.h" />
     <ClInclude Include="Win32ErrorCodeException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp" />
+    <ClCompile Include="ProcessUtils.cpp" />
     <ClCompile Include="RunningProcesses.cpp" />
     <ClCompile Include="ProcessEntryIterator.cpp" />
+    <ClCompile Include="StringUtils.cpp" />
+    <ClCompile Include="VirtualAllocExGuard.cpp" />
     <ClCompile Include="Win32ErrorCodeException.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
