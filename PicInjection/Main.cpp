@@ -1,5 +1,4 @@
-#include "PIC.h"
-
+#include "../PIC/PIC.h"
 #include "../Common/ProcessUtils.h"
 #include "../Common/AutoHandle.h"
 #include "../Common/Win32ErrorCodeException.h"
@@ -14,6 +13,7 @@
 #include <iomanip>
 
 #include <Windows.h>
+
 
 void writeToTargetProcess(HANDLE targetProcess, LPVOID remoteAddress, LPVOID data, SIZE_T dataSize);
 PicParams getPicParameters();
