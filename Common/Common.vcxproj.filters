@@ -45,6 +45,12 @@
     <ClInclude Include="AutoVirtualAlloc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SehException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SehTranslatorGuard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp">
@@ -72,6 +78,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AutoVirtualAlloc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SehException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SehTranslatorGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -22,6 +22,8 @@
     <ClInclude Include="AutoHandle.h" />
     <ClInclude Include="AutoVirtualAlloc.h" />
     <ClInclude Include="DebugPrint.h" />
+    <ClInclude Include="SehException.h" />
+    <ClInclude Include="SehTranslatorGuard.h" />
     <ClInclude Include="ProcessUtils.h" />
     <ClInclude Include="RunningProcesses.h" />
     <ClInclude Include="ProcessEntryIterator.h" />
@@ -33,6 +35,8 @@
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp" />
     <ClCompile Include="AutoVirtualAlloc.cpp" />
+    <ClCompile Include="SehException.cpp" />
+    <ClCompile Include="SehTranslatorGuard.cpp" />
     <ClCompile Include="ProcessUtils.cpp" />
     <ClCompile Include="RunningProcesses.cpp" />
     <ClCompile Include="ProcessEntryIterator.cpp" />
