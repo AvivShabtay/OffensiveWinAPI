@@ -27,6 +27,7 @@
     <ClInclude Include="ProcessEntryIterator.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="VirtualAllocExGuard.h" />
+    <ClInclude Include="VirtualProtectGuard.h" />
     <ClInclude Include="Win32ErrorCodeException.h" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +38,7 @@
     <ClCompile Include="ProcessEntryIterator.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="VirtualAllocExGuard.cpp" />
+    <ClCompile Include="VirtualProtectGuard.cpp" />
     <ClCompile Include="Win32ErrorCodeException.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
