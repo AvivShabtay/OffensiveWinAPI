@@ -17,8 +17,8 @@ public:
 	// delete copy ctor, move ctor, assignment
 	Win32ErrorCodeException(const Win32ErrorCodeException&) = delete;
 	Win32ErrorCodeException& operator=(const Win32ErrorCodeException&) = delete;
-	Win32ErrorCodeException(Win32ErrorCodeException&&) = delete;
-	Win32ErrorCodeException& operator=(Win32ErrorCodeException&&) = delete;
+	Win32ErrorCodeException(Win32ErrorCodeException&&) = default;
+	Win32ErrorCodeException& operator=(Win32ErrorCodeException&&) = default;
 
 	/* Get Windows last error code. */
 	DWORD getErrorCode() const;

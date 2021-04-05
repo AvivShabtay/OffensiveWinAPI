@@ -1,4 +1,3 @@
-#include "..\Helper\common.h"
 #include <windows.h>
 #include <winternl.h>
 #include <tchar.h>
