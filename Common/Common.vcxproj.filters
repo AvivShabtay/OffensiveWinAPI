@@ -60,7 +60,7 @@
     <ClInclude Include="SehTranslatorGuard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComInitializeGuard.h">
+    <ClInclude Include="ComInitializationGuard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WmiQuery.h">
@@ -116,7 +116,7 @@
     <ClCompile Include="SehTranslatorGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComInitializeGuard.cpp">
+    <ClCompile Include="ComInitializationGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WmiQuery.cpp">
