@@ -22,18 +22,23 @@
     <ClInclude Include="AutoHandle.h" />
     <ClInclude Include="AutoVirtualAlloc.h" />
     <ClInclude Include="DebugPrint.h" />
+    <ClInclude Include="Exception.h" />
     <ClInclude Include="IatHook.h" />
     <ClInclude Include="PeModule.h" />
     <ClInclude Include="SehException.h" />
     <ClInclude Include="SehTranslatorGuard.h" />
     <ClInclude Include="TrampolineHook.h" />
     <ClInclude Include="ProcessUtils.h" />
+    <ClInclude Include="ComInitializationGuard.h" />
     <ClInclude Include="RunningProcesses.h" />
     <ClInclude Include="ProcessEntryIterator.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="VirtualAllocExGuard.h" />
     <ClInclude Include="VirtualProtectGuard.h" />
     <ClInclude Include="Win32ErrorCodeException.h" />
+    <ClInclude Include="Wmi.h" />
+    <ClInclude Include="WmiProcessIterator.h" />
+    <ClInclude Include="WmiQuery.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoHandle.cpp" />
@@ -44,12 +49,15 @@
     <ClCompile Include="SehTranslatorGuard.cpp" />
     <ClCompile Include="TrampolineHook.cpp" />
     <ClCompile Include="ProcessUtils.cpp" />
+    <ClCompile Include="ComInitializationGuard.cpp" />
     <ClCompile Include="RunningProcesses.cpp" />
     <ClCompile Include="ProcessEntryIterator.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="VirtualAllocExGuard.cpp" />
     <ClCompile Include="VirtualProtectGuard.cpp" />
     <ClCompile Include="Win32ErrorCodeException.cpp" />
+    <ClCompile Include="WmiProcessIterator.cpp" />
+    <ClCompile Include="WmiQuery.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
