@@ -23,6 +23,7 @@
     <ClInclude Include="AutoHandle.h" />
     <ClInclude Include="AutoVirtualAlloc.h" />
     <ClInclude Include="DebugPrint.h" />
+    <ClInclude Include="Exception.h" />
     <ClInclude Include="IatHook.h" />
     <ClInclude Include="PeModule.h" />
     <ClInclude Include="SehException.h" />
