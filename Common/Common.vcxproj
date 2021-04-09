@@ -37,6 +37,7 @@
     <ClInclude Include="VirtualAllocExGuard.h" />
     <ClInclude Include="VirtualProtectGuard.h" />
     <ClInclude Include="Win32ErrorCodeException.h" />
+    <ClInclude Include="Wmi.h" />
     <ClInclude Include="WmiQuery.h" />
   </ItemGroup>
   <ItemGroup>

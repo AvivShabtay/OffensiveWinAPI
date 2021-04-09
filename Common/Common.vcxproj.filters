@@ -69,6 +69,7 @@
     <ClInclude Include="Exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Wmi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
