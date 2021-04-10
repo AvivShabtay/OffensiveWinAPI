@@ -1,7 +1,13 @@
 #include "PIC.h"
 
+#pragma runtime_checks( "", off )
+#pragma optimize("", off)
+
 #pragma code_seg(".text$AAAA")
-DWORD WINAPI startPic(struct PicParams* params)
+DWORD
+__declspec(safebuffers)
+__declspec(noinline)
+WINAPI startPic(struct PicParams* params)
 {
 	//__debugbreak();
 	pLoadLibraryA loadLibraryA = (pLoadLibraryA)(params->loadLibraryA);
@@ -24,3 +30,6 @@ void endPic()
 {
 	// Left blank internationally
 }
+
+#pragma optimize("", on)
+#pragma runtime_checks( "", restore)
