@@ -6,6 +6,7 @@ struct PicParams
 {
 	LPVOID loadLibraryA;
 	LPVOID getProcAddress;
+	SIZE_T picSize;
 };
 
 typedef HMODULE(WINAPI* pLoadLibraryA)(_In_ LPCSTR lpLibFileName);

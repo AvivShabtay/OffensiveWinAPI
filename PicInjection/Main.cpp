@@ -16,7 +16,7 @@
 
 
 void writeToTargetProcess(HANDLE targetProcess, LPVOID remoteAddress, LPVOID data, SIZE_T dataSize);
-PicParams getPicParameters();
+PicParams getPicParameters(SIZE_T picSize);
 
 const std::wstring targetProcessName(L"notepad.exe");
 
@@ -41,7 +41,14 @@ int wmain(int argc, PWCHAR argv[])
 		DEBUG_PRINT("[+] Allocate memory for PIC parameters in target process");
 
 
-		PicParams params = getPicParameters();
+		const int picBytesSize = reinterpret_cast<LPBYTE>(endPic) - reinterpret_cast<LPBYTE>(startPic);
+		if (0 >= picBytesSize)
+		{
+			throw std::runtime_error("Invalid PIC size");
+		}
+
+
+		PicParams params = getPicParameters(picBytesSize);
 
 
 		writeToTargetProcess(targetProcess.get(), remoteParamsMemoryGuard.get(), &params, sizeof(PicParams));
@@ -101,7 +108,7 @@ void writeToTargetProcess(HANDLE targetProcess, LPVOID remoteAddress, LPVOID dat
 	}
 }
 
-PicParams getPicParameters()
+PicParams getPicParameters(SIZE_T picSize)
 {
 	PicParams params{ nullptr, nullptr };
 
@@ -112,6 +119,8 @@ PicParams getPicParameters()
 	{
 		throw std::runtime_error("Invalid PIC parameters");
 	}
+
+	params.picSize = picSize;
 
 	return params;
 }
